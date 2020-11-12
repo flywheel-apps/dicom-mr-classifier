@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 
+import datetime
+import json
+import logging
 import os
 import re
-import json
-import pytz
-import pydicom
 import string
-import tzlocal
-import logging
 import zipfile
-import datetime
-import classification_from_label
 from fnmatch import fnmatch
 from pprint import pprint
+
+import pydicom
+import pytz
+import tzlocal
+
+import classification_from_label
 
 logging.basicConfig()
 log = logging.getLogger("dicom-mr-classifier")
