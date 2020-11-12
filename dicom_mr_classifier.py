@@ -4,7 +4,7 @@ import os
 import re
 import json
 import pytz
-import dicom
+import pydicom
 import string
 import tzlocal
 import logging
@@ -17,7 +17,7 @@ from pprint import pprint
 logging.basicConfig()
 log = logging.getLogger("dicom-mr-classifier")
 
-DEFAULT_TME = '120000.00'
+DEFAULT_TME = "120000.00"
 
 
 def get_session_label(dcm):
@@ -107,7 +107,6 @@ def timestamp(date, time, timezone):
 def get_timestamp(dcm, timezone):
     """
     Parse Study Date and Time, return acquisition and session timestamps.
-
     For study date/time Dicom tag used by order of priority goes like a:
         - StudyDate/StudyTime
         - SeriesDate/SeriesTime
@@ -116,7 +115,6 @@ def get_timestamp(dcm, timezone):
         - StudyDate and Time defaults to DEFAULT_TME
         - SeriesDates and Time defaults to DEFAULT_TME
         - AcquisitionDate and Time defaults to DEFAULT_TME
-
     For acquisition date/time Dicom tag used by order of priority goes like a:
         - SeriesDate/SeriesTime
         - AcquisitionDate/AcquisitionTime
@@ -128,26 +126,28 @@ def get_timestamp(dcm, timezone):
         - StudyDate and Time defaults to DEFAULT_TME
     """
     # Study Date and Time, with precedence as below
-    if getattr(dcm, 'StudyDate', None) and getattr(dcm, 'StudyTime', None):
+    if getattr(dcm, "StudyDate", None) and getattr(dcm, "StudyTime", None):
         study_date = dcm.StudyDate
         study_time = dcm.StudyTime
-    elif getattr(dcm, 'SeriesDate', None) and getattr(dcm, 'SeriesTime', None):
+    elif getattr(dcm, "SeriesDate", None) and getattr(dcm, "SeriesTime", None):
         study_date = dcm.SeriesDate
         study_time = dcm.SeriesTime
-    elif getattr(dcm, 'AcquisitionDate', None) and getattr(dcm, 'AcquisitionTime', None):
+    elif getattr(dcm, "AcquisitionDate", None) and getattr(
+        dcm, "AcquisitionTime", None
+    ):
         study_date = dcm.AcquisitionDate
         study_time = dcm.AcquisitionTime
-    elif getattr(dcm, 'AcquisitionDateTime', None):
+    elif getattr(dcm, "AcquisitionDateTime", None):
         study_date = dcm.AcquisitionDateTime[0:8]
         study_time = dcm.AcquisitionDateTime[8:]
     # If only Dates are available setting time to 00:00
-    elif getattr(dcm, 'StudyDate', None):
+    elif getattr(dcm, "StudyDate", None):
         study_date = dcm.StudyDate
         study_time = DEFAULT_TME
-    elif getattr(dcm, 'SeriesDate', None):
+    elif getattr(dcm, "SeriesDate", None):
         study_date = dcm.SeriesDate
         study_time = DEFAULT_TME
-    elif getattr(dcm, 'AcquisitionDate', None):
+    elif getattr(dcm, "AcquisitionDate", None):
         study_date = dcm.AcquisitionDate
         study_time = DEFAULT_TME
     else:
@@ -155,31 +155,33 @@ def get_timestamp(dcm, timezone):
         study_time = None
 
     # Acquisition Date and Time, with precedence as below
-    if getattr(dcm, 'SeriesDate', None) and getattr(dcm, 'SeriesTime', None):
+    if getattr(dcm, "SeriesDate", None) and getattr(dcm, "SeriesTime", None):
         acquisition_date = dcm.SeriesDate
         acquisition_time = dcm.SeriesTime
-    elif getattr(dcm, 'AcquisitionDate', None) and getattr(dcm, 'AcquisitionTime', None):
+    elif getattr(dcm, "AcquisitionDate", None) and getattr(
+        dcm, "AcquisitionTime", None
+    ):
         acquisition_date = dcm.AcquisitionDate
         acquisition_time = dcm.AcquisitionTime
-    elif getattr(dcm, 'AcquisitionDateTime', None):
+    elif getattr(dcm, "AcquisitionDateTime", None):
         acquisition_date = dcm.AcquisitionDateTime[0:8]
         acquisition_time = dcm.AcquisitionDateTime[8:]
     # The following allows the timestamps to be set for ScreenSaves
-    elif getattr(dcm, 'ContentDate', None) and getattr(dcm, 'ContentTime', None):
+    elif getattr(dcm, "ContentDate", None) and getattr(dcm, "ContentTime", None):
         acquisition_date = dcm.ContentDate
         acquisition_time = dcm.ContentTime
     # Looking deeper if nothing found so far
-    elif getattr(dcm, 'StudyDate', None) and getattr(dcm, 'StudyTime', None):
+    elif getattr(dcm, "StudyDate", None) and getattr(dcm, "StudyTime", None):
         acquisition_date = dcm.StudyDate
         acquisition_time = dcm.StudyTime
     # If only Dates are available setting time to 00:00
-    elif getattr(dcm, 'SeriesDate', None):
+    elif getattr(dcm, "SeriesDate", None):
         acquisition_date = dcm.SeriesDate
         acquisition_time = DEFAULT_TME
-    elif getattr(dcm, 'AcquisitionDate', None):
+    elif getattr(dcm, "AcquisitionDate", None):
         acquisition_date = dcm.AcquisitionDate
         acquisition_time = DEFAULT_TME
-    elif getattr(dcm, 'StudyDate', None):
+    elif getattr(dcm, "StudyDate", None):
         acquisition_date = dcm.StudyDate
         acquisition_time = DEFAULT_TME
 
@@ -192,18 +194,18 @@ def get_timestamp(dcm, timezone):
 
     if session_timestamp:
         if session_timestamp.tzinfo is None:
-            log.info('no tzinfo found, using UTC...')
-            session_timestamp = pytz.timezone('UTC').localize(session_timestamp)
+            log.info("no tzinfo found, using UTC...")
+            session_timestamp = pytz.timezone("UTC").localize(session_timestamp)
         session_timestamp = session_timestamp.isoformat()
     else:
-        session_timestamp = ''
+        session_timestamp = ""
     if acquisition_timestamp:
         if acquisition_timestamp.tzinfo is None:
-            log.info('no tzinfo found, using UTC')
-            acquisition_timestamp = pytz.timezone('UTC').localize(acquisition_timestamp)
+            log.info("no tzinfo found, using UTC")
+            acquisition_timestamp = pytz.timezone("UTC").localize(acquisition_timestamp)
         acquisition_timestamp = acquisition_timestamp.isoformat()
     else:
-        acquisition_timestamp = ''
+        acquisition_timestamp = ""
     return session_timestamp, acquisition_timestamp
 
 
@@ -224,13 +226,9 @@ def assign_type(s):
     """
     Sets the type of a given input.
     """
-    if (
-        type(s) == dicom.valuerep.PersonName
-        or type(s) == dicom.valuerep.PersonName3
-        or type(s) == dicom.valuerep.PersonNameBase
-    ):
+    if type(s) == pydicom.valuerep.PersonName:
         return format_string(s)
-    if type(s) == list or type(s) == dicom.multival.MultiValue:
+    if type(s) == list or type(s) == pydicom.multival.MultiValue:
         try:
             return [int(x) if type(x) == int else float(x) for x in s]
         except ValueError:
@@ -249,13 +247,16 @@ def assign_type(s):
 
 
 def format_string(in_string):
-    formatted = re.sub(
-        r"[^\x00-\x7f]", r"", str(in_string)
-    )  # Remove non-ascii characters
-    formatted = filter(lambda x: x in string.printable, formatted)
-    if len(formatted) == 1 and formatted == "?":
-        formatted = None
-    return formatted  # .encode('utf-8').strip()
+    #    formatted = re.sub(
+    #        r"[^\x00-\x7f]", r"", str(in_string)
+    #    )  # Remove non-ascii characters
+    #    formatted = filter(lambda x: x in string.printable, formatted)
+    # if len(formatted) == 1 and formatted == "?":
+    #    formatted = None
+
+    # return formatted  # .encode('utf-8').strip()
+    in_string = str(in_string).encode(encoding="ascii", errors="ignore")
+    return in_string.decode()
 
 
 def get_seq_data(sequence, ignore_keys):
@@ -421,7 +422,6 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
     """
     Extracts metadata from dicom file header within a zip file and writes to .metadata.json.
     """
-    import dicom
 
     # Parse config for options
     if config:
@@ -453,7 +453,7 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
             if os.path.isfile(dcm_path):
                 try:
                     log.info("reading %s" % dcm_path)
-                    dcm = dicom.read_file(dcm_path, force=config_force)
+                    dcm = pydicom.dcmread(dcm_path, force=config_force)
                     # Here we check for the Raw Data Storage SOP Class, if there
                     # are other DICOM files in the zip then we read the next one,
                     # if this is the only class of DICOM in the file, we accept
@@ -474,7 +474,7 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
             "Not a zip. Attempting to read %s directly"
             % os.path.basename(zip_file_path)
         )
-        dcm = dicom.read_file(zip_file_path)
+        dcm = pydicom.dcmread(zip_file_path)
 
     if not dcm:
         log.warning(
@@ -591,43 +591,3 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
     pprint(metadata)
 
     return metafile_outname
-
-
-if __name__ == "__main__":
-    """
-    Generate session, subject, and acquisition metatada by parsing the dicom header, using pydicom.
-    """
-    import argparse
-
-    ap = argparse.ArgumentParser()
-    ap.add_argument("dcmzip", help="path to dicom zip")
-    ap.add_argument("outbase", nargs="?", help="outfile name prefix")
-    ap.add_argument("--log_level", help="logging level", default="info")
-    ap.add_argument(
-        "--config-file",
-        default="/flywheel/v0/config.json",
-        help="Configuration file with custom classifications in context",
-    )
-    args = ap.parse_args()
-
-    log.setLevel(getattr(logging, args.log_level.upper()))
-    logging.getLogger("sctran.data").setLevel(logging.INFO)
-    log.info("start: %s" % datetime.datetime.utcnow())
-
-    args.timezone = validate_timezone(tzlocal.get_localzone())
-
-    # Load config from file
-    if args.config_file and os.path.isfile(args.config_file):
-        with open(args.config_file) as json_file:
-            config = json.load(json_file)
-    else:
-        config = None
-
-    metadatafile = dicom_classify(args.dcmzip, args.outbase, args.timezone, config)
-
-    if os.path.exists(metadatafile):
-        log.info("generated %s" % metadatafile)
-    else:
-        log.info("failure! %s was not generated!" % metadatafile)
-
-    log.info("stop: %s" % datetime.datetime.utcnow())
