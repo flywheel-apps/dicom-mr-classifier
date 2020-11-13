@@ -46,5 +46,5 @@
       "base": "context"
     }
   },
-  "command": "python /flywheel/v0/run.py",
+  "command": "/flywheel/v0/run.py"
 }
