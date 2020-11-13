@@ -9,6 +9,9 @@ python = "^3.8"
 flywheel-gear-toolkit = "^0.1.1"
 pydicom = "^2.1.1"
 numpy = "^1.19.4"
+pytz = "^2020.4"
+tzlocal = "^2.1"
+nibabel = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
 

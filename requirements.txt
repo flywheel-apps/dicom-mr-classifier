@@ -11,17 +11,22 @@ future==0.18.2; python_version >= "2.6" and python_version not in "3.0, 3.1, 3.2
 idna==2.10
 idna==2.10; python_version >= "2.7" and python_version not in "3.0, 3.1, 3.2, 3.3"
 jsonschema==3.2.0
+nibabel==3.2.0
 numpy==1.19.4
+packaging==20.4
 pydicom==2.1.1
+pyparsing==2.4.7
 pyrsistent==0.16.0
 python-dateutil==2.8.1
 python-dateutil==2.8.1; python_version >= "2.7" and python_version not in "3.0, 3.1, 3.2"
+pytz==2020.4
 requests-toolbelt==0.9.1
 requests==2.24.0
 requests==2.24.0; python_version >= "2.7" and python_version not in "3.0, 3.1, 3.2, 3.3, 3.4"
 rfc3987==1.3.8
 six==1.15.0
 six==1.15.0; python_version >= "2.7" and python_version not in "3.0, 3.1, 3.2"
+tzlocal==2.1
 urllib3==1.25.10
 urllib3==1.25.10; python_version >= "2.7" and python_version not in "3.0, 3.1, 3.2, 3.3, 3.4" and python_version < "4"
 zipp==3.1.0; python_version >= "3.6"
