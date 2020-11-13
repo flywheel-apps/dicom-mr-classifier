@@ -3,7 +3,6 @@
         "timezone": "UTC",
         "force": false
     },
-    "inputs": { {
      "config": {
          "timezone": "UTC",
          "force": false
@@ -22,17 +21,3 @@
      },
      "destination": {}
  }
-
-        "dicom": {
-            "base": "file",
-            "location": {
-                "name": "dicom",
-                "path": "/flywheel/v0/input/dicom/T1w.dicom.zip"
-            },
-            "object": {
-                "size": 12454280
-            }
-        }
-    },
-    "destination": {}
-}
