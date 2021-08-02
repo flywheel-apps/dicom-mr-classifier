@@ -1,21 +1,21 @@
 {
   "name": "dicom-mr-classifier",
-  "label": "SciTran: DICOM MR Classifier",
+  "label": "DICOM MR Classifier",
   "description": "Extract metadata and determine classification from raw DICOM data. Compatible with Siemens, Philips, and GE DICOMs.",
   "maintainer": "Michael Perry <lmperry@stanford.edu>",
   "author": "Michael Perry <lmperry@stanford.edu>",
-  "url": "https://github.com/scitran-apps/dicom-mr-classifier",
-  "source": "https://github.com/scitran-apps/dicom-mr-classifier/releases",
+  "url": "https://github.com/flywheel-apps/dicom-mr-classifier",
+  "source": "https://github.com/flywheel-apps/dicom-mr-classifier/releases",
   "license": "Apache-2.0",
   "flywheel": "0",
   "version": "1.4.3",
   "custom": {
     "gear-builder": {
-      "image": "scitran/dicom-mr-classifier:1.4.3",
+      "image": "flywheel/dicom-mr-classifier:1.4.3",
       "category": "converter"
     },
     "flywheel": {
-      "suite": "SciTran",
+      "suite": "Curation",
       "uid": 1000,
       "gid": 1000
     }
