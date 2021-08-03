@@ -583,8 +583,10 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
             classification = classification_from_label.infer_classification(series_desc)
             log.info("Inferred classification from label: %s", classification)
             # GEAR-1084, keep any custom classification already set.
-        if not classification:
-            classification = {'Custom': ['N/A']}
+            if not classification:
+                classification = {'Custom': ['N/A']}
+        elif dcm.get("Modality") != "MR":
+            classification = {}
         dicom_file["classification"] = classification
 
     # If no pixel data present, make classification intent "Non-Image"
