@@ -408,7 +408,7 @@ def get_custom_classification(label, config=None):
     for k in classifications.keys():
         val = classifications[k]
 
-        if not isinstance(val, basestring):
+        if not isinstance(val, str):
             log.warn("Expected string value for classification key %s", k)
             continue
 
