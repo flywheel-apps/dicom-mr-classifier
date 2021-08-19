@@ -574,6 +574,16 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
     if hasattr(dcm, "Modality") and dcm.get("Modality"):
         metadata["acquisition"]["instrument"] = format_string(dcm.get("Modality"))
 
+    # If no pixel data present, make classification intent "Non-Image"
+    if not hasattr(dcm, "PixelData"):
+        nonimage_intent = {"Intent": ["Non-Image"]}
+        # If classification is a dict, update dict with intent
+        if isinstance(dicom_file["classification"], dict):
+            dicom_file["classification"].update(nonimage_intent)
+        # Else classification is a list, assign dict with intent
+        else:
+            dicom_file["classification"] = nonimage_intent
+
     series_desc = format_string(dcm.get("SeriesDescription", ""))
     if series_desc:
         metadata["acquisition"]["label"] = series_desc
@@ -589,15 +599,6 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
             classification = {}
         dicom_file["classification"] = classification
 
-    # If no pixel data present, make classification intent "Non-Image"
-    if not hasattr(dcm, "PixelData"):
-        nonimage_intent = {"Intent": ["Non-Image"]}
-        # If classification is a dict, update dict with intent
-        if isinstance(dicom_file["classification"], dict):
-            dicom_file["classification"].update(nonimage_intent)
-        # Else classification is a list, assign dict with intent
-        else:
-            dicom_file["classification"] = nonimage_intent
 
     # File info from dicom header
     dicom_file["info"] = get_dicom_header(dcm)
