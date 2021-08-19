@@ -574,16 +574,6 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
     if hasattr(dcm, "Modality") and dcm.get("Modality"):
         metadata["acquisition"]["instrument"] = format_string(dcm.get("Modality"))
 
-    # If no pixel data present, make classification intent "Non-Image"
-    if not hasattr(dcm, "PixelData"):
-        nonimage_intent = {"Intent": ["Non-Image"]}
-        # If classification is a dict, update dict with intent
-        if isinstance(dicom_file["classification"], dict):
-            dicom_file["classification"].update(nonimage_intent)
-        # Else classification is a list, assign dict with intent
-        else:
-            dicom_file["classification"] = nonimage_intent
-
     series_desc = format_string(dcm.get("SeriesDescription", ""))
     if series_desc:
         metadata["acquisition"]["label"] = series_desc
@@ -597,7 +587,25 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
                 classification = {'Custom': ['N/A']}
         elif dcm.get("Modality") != "MR":
             classification = {}
-        dicom_file["classification"] = classification
+        dicom_file["classification"].update(classification)
+
+    # If no pixel data present, make classification intent "Non-Image"
+    if not hasattr(dcm, "PixelData"):
+        nonimage_intent = "Non-Image"
+        # If classification is a dict, update dict with intent
+        if isinstance(dicom_file["classification"], dict):
+            classification  = dicom_file['classification']
+            # If intent not present, add it with nonimage_intent
+            if 'Intent' not in classification:
+                classification['Intent'] = nonimage_intent
+            else:
+                # Otherwise append non-image if not in Intent
+                if nonimage_intent not in classification['Intent']:
+                    classification['Inent'].append(nonimage_intent)
+        # Else classification is a list, assign dict with intent
+        else:
+            dicom_file["classification"] = nonimage_intent
+
 
 
     # File info from dicom header
