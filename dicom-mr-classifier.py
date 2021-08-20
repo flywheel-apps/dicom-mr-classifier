@@ -601,7 +601,7 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
             else:
                 # Otherwise append non-image if not in Intent
                 if nonimage_intent not in classification['Intent']:
-                    classification['Inent'].append(nonimage_intent)
+                    classification['Intent'].append(nonimage_intent)
         # Else classification is a list, assign dict with intent
         else:
             dicom_file["classification"] = nonimage_intent
