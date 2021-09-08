@@ -227,8 +227,10 @@ def get_sex_string(sex_str):
         sex = "male"
     elif sex_str == "F":
         sex = "female"
+    elif sex_str == "O":
+        sex = "other"
     else:
-        sex = ""
+        sex = "unknown"
     return sex
 
 
