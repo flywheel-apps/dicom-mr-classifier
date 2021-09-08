@@ -230,7 +230,7 @@ def get_sex_string(sex_str):
     elif sex_str == "O":
         sex = "other"
     else:
-        sex = "unknown"
+        sex = ""
     return sex
 
 
