@@ -96,7 +96,7 @@ def is_anatomy_t2(label):
     ]
     return regex_search_label(regexes, label)
 
-# Aanatomy, Inplane
+# Anatomy, Inplane
 def is_anatomy_inplane(label):
     regexes = [
         re.compile('inplane', re.IGNORECASE)
@@ -201,7 +201,7 @@ def is_localizer(label):
 # Shim
 def is_shim(label):
     regexes = [
-        re.compile('(?=.*HO)(?=.*shim)', re.IGNORECASE), # Contians 'ho' and 'shim'
+        re.compile('(?=.*HO)(?=.*shim)', re.IGNORECASE), # Contains 'ho' and 'shim'
         re.compile(r'\bHOS\b', re.IGNORECASE),
         re.compile('_HOS_', re.IGNORECASE),
         re.compile('.*shim', re.IGNORECASE)
@@ -299,8 +299,8 @@ def is_spectroscopy(label):
         ]
     return regex_search_label(regexes, label)
 
-# Susceptability
-def is_susceptability(label):
+# Susceptibility
+def is_susceptibility(label):
     regexes = [
         re.compile('swi', re.IGNORECASE),
         re.compile('mag_images', re.IGNORECASE),
@@ -359,8 +359,8 @@ def infer_classification(label):
             classification['Measurement'] = ['PD']
         elif is_perfusion(label):
             classification['Measurement'] = ['Perfusion']
-        elif is_susceptability(label):
-            classification['Measurement'] = ['Susceptability']
+        elif is_susceptibility(label):
+            classification['Measurement'] = ['Susceptibility']
         elif is_spectroscopy(label):
             classification['Intent'] = ['Spectroscopy']
         elif is_phase_map(label):
