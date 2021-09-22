@@ -593,7 +593,7 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
 
     # If no pixel data present, make classification intent "Non-Image"
     if not hasattr(dcm, "PixelData"):
-        nonimage_intent = "Non-Image"
+        nonimage_intent = ["Non-Image"]
         # If classification is a dict, update dict with intent
         if isinstance(dicom_file["classification"], dict):
             classification  = dicom_file['classification']
