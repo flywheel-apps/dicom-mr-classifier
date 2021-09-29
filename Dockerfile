@@ -10,7 +10,7 @@
 #        /data/outprefix
 #
 
-FROM python:3.7-buster
+FROM python:3.8-buster
 
 MAINTAINER Michael Perry <lmperry@stanford.edu>
 
@@ -26,7 +26,8 @@ RUN pip install \
   python-dateutil==2.6.0 \
   pytz==2017.2 \
   tzlocal==1.4 \
-  nibabel==2.2.1
+  nibabel==2.2.1 \
+  flywheel-gear-toolkit==0.5.0
 
 # Make directory for flywheel spec (v0)
 ENV FLYWHEEL /flywheel/v0

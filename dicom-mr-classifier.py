@@ -13,6 +13,8 @@ import datetime
 import classification_from_label
 from fnmatch import fnmatch
 from pprint import pprint
+from flywheel_gear_toolkit.interfaces import engine_metadata
+import jsonschema
 
 logging.basicConfig()
 log = logging.getLogger("dicom-mr-classifier")
@@ -623,6 +625,14 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
 
     # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase), ".metadata.json")
+    log.info('Validating output metadata')
+    validator = jsonschema.Draft7Validator(engine_metadata)
+    error = False
+    for err in validator.iter_errors(metadata):
+        if err:
+            error = True
+        log.error(err)
+
     with open(metafile_outname, "w") as metafile:
         json.dump(metadata, metafile)
 
