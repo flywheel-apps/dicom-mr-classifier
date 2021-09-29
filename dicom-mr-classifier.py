@@ -13,6 +13,8 @@ import datetime
 import classification_from_label
 from fnmatch import fnmatch
 from pprint import pprint
+from flywheel_gear_toolkit.interfaces import engine_metadata
+import jsonschema
 
 logging.basicConfig()
 log = logging.getLogger("dicom-mr-classifier")
@@ -593,20 +595,20 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
 
     # If no pixel data present, make classification intent "Non-Image"
     if not hasattr(dcm, "PixelData"):
-        nonimage_intent = ["Non-Image"]
+        non_image_intent = 'Non-Image'
         # If classification is a dict, update dict with intent
         if isinstance(dicom_file["classification"], dict):
             classification  = dicom_file['classification']
             # If intent not present, add it with nonimage_intent
             if 'Intent' not in classification:
-                classification['Intent'] = nonimage_intent
+                classification['Intent'] = [non_image_intent]
             else:
                 # Otherwise append non-image if not in Intent
-                if nonimage_intent not in classification['Intent']:
-                    classification['Intent'].append(nonimage_intent)
+                if non_image_intent not in classification['Intent']:
+                    classification['Intent'].append(non_image_intent)
         # Else classification is a list, assign dict with intent
         else:
-            dicom_file["classification"] = nonimage_intent
+            dicom_file["classification"] = [nonimage_intent]
 
 
 
@@ -623,6 +625,14 @@ def dicom_classify(zip_file_path, outbase, timezone, config=None):
 
     # Write out the metadata to file (.metadata.json)
     metafile_outname = os.path.join(os.path.dirname(outbase), ".metadata.json")
+    log.info('Validating output metadata')
+    validator = jsonschema.Draft7Validator(engine_metadata)
+    error = False
+    for err in validator.iter_errors(metadata):
+        if err:
+            error = True
+        log.error(err)
+
     with open(metafile_outname, "w") as metafile:
         json.dump(metadata, metafile)
 
