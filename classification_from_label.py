@@ -114,6 +114,8 @@ def is_anatomy(label):
 # Diffusion
 def is_diffusion(label):
     regexes = [
+        re.compile('^dmri_', re.IGNORECASE),
+        re.compile('_dmri$', re.IGNORECASE),
         re.compile('dti', re.IGNORECASE),
         re.compile('dwi', re.IGNORECASE),
         re.compile('diff_', re.IGNORECASE),
