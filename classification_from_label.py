@@ -307,7 +307,8 @@ def is_susceptibility(label):
         re.compile('swi', re.IGNORECASE),
         re.compile('mag_images', re.IGNORECASE),
         re.compile('pha_images', re.IGNORECASE),
-        re.compile('mip_images', re.IGNORECASE)
+        re.compile('mip_images', re.IGNORECASE),
+        re.compile('megre', re.IGNORECASE)
         ]
     return regex_search_label(regexes, label)
 
