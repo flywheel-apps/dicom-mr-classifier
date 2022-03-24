@@ -278,15 +278,6 @@ def is_screenshot(label):
         ]
     return regex_search_label(regexes, label)
 
-
-
-# Utility:  Check a list of regexes for truthyness
-def regex_search_label(regexes, label):
-    if any(regex.search(label) for regex in regexes):
-            return True
-    else:
-            return False
-
 # Spectroscopy
 def is_spectroscopy(label):
     regexes = [
@@ -310,6 +301,23 @@ def is_susceptibility(label):
         re.compile('mip_images', re.IGNORECASE)
         ]
     return regex_search_label(regexes, label)
+
+# Multi-echo gradient echo
+def is_megre(label):
+    regexes = [
+        re.compile('megre', re.IGNORECASE)
+    ]
+    return regex_search_label(regexes, label)
+
+
+
+# Utility:  Check a list of regexes for truthyness
+def regex_search_label(regexes, label):
+    if any(regex.search(label) for regex in regexes):
+            return True
+    else:
+            return False
+
 
 
 # Call all functions to determine new label
@@ -367,6 +375,9 @@ def infer_classification(label):
             classification['Intent'] = ['Spectroscopy']
         elif is_phase_map(label):
             classification['Custom'] = ['Phase Map']
+        elif is_megre(label):
+            classification['Measurement'] = ['T2*']
+            classification['Features'] = ['Gradient-Echo', 'Multi-Echo']
         elif is_screenshot(label):
             classification['Intent'] = ['Screenshot']
         else:
