@@ -309,6 +309,12 @@ def is_megre(label):
     ]
     return regex_search_label(regexes, label)
 
+# Volumetric navigator
+def is_vnav(label):
+    regexes = [
+        re.compile('_vnav_setter', re.IGNORECASE)
+        ]
+    return regex_search_label(regexes, label)
 
 
 # Utility:  Check a list of regexes for truthyness
@@ -346,6 +352,8 @@ def infer_classification(label):
         elif is_functional(label):
             classification['Intent'] = ['Functional']
             classification['Measurement'] = ['T2*']
+        elif is_vnav(label):
+            classification['Features'] = ['3D', 'EPI', 'Navigator']
         elif is_anatomy_t2(label):
             classification['Intent'] = ['Structural']
             classification['Measurement'] = ['T2']
