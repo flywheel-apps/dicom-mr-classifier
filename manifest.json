@@ -15,9 +15,26 @@
       "category": "converter"
     },
     "flywheel": {
-      "suite": "Curation",
+      "suite": "",
       "uid": 1000,
-      "gid": 1000
+      "gid": 1000,
+      "classification": {
+        "species": [
+          ""
+        ],
+        "organ": [
+          ""
+        ],
+        "therapeutic_area": [
+          ""
+        ],
+        "modality": [
+          ""
+        ],
+        "function": [
+          ""
+        ]
+      }
     }
   },
   "config": {
